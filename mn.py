@@ -3,6 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from torchvision import datasets, transforms
+from tqdm import tqdm 
 
 # Define model 
 class build_model(nn.Module):
@@ -32,20 +33,26 @@ train_loader = torch.utils.data.DataLoader(
                   ])),
   batch_size=64, shuffle=True)
 
+print('train_loader', len(train_loader))
+
 # Initialize model and optimizer
 model = build_model()
 optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.5)
 
 # Train model
-for epoch in range(1):
-  for batch_idx, (data, target) in enumerate(train_loader):
+for epoch in range(3):
+  enu_train_loader = enumerate(train_loader)
+  for batch_idx in tqdm(range(len(train_loader)), desc ="Step"):
+  #for batch_idx, (data, target) in enumerate(train_loader):
+    _, (data, target) = next(enu_train_loader)
+
     optimizer.zero_grad()
     output = model(data)
     loss = F.nll_loss(output, target)
     loss.backward()
     optimizer.step()
 
-  print('Epoch:', epoch, 'Loss:', loss.item())
+  print('Epoch:', epoch, ', Loss:', loss.item())
 
 # Save model
 torch.save(model.state_dict(), '/tmp/pt_model.pt')
