@@ -11,7 +11,6 @@ from tqdm import tqdm
 #os.environ['WORLD_SIZE'] = '2' 
 #os.environ['GLOO_SOCKET_IFNAME'] = 'eth0'
 
-
 import sys
 worker_id = int(sys.argv[1])
 
