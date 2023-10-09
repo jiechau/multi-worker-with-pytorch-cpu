@@ -37,7 +37,7 @@ trainset = datasets.MNIST('/tmp/data', download=True, train=True, transform=tran
 
 
 # Initialize distributed backend  
-dist.init_process_group(backend='gloo', 
+dist.init_process_group(backend='tcp', 
 #                        init_method='tcp://127.0.0.1:8088',
                         init_method='tcp://172.17.2.15:8088',
                         world_size=2,
