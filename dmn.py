@@ -1,7 +1,6 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import torch.distributed as dist
 import torch.optim as optim
 
 #import os
@@ -44,12 +43,12 @@ transform = transforms.Compose([
 trainset = datasets.MNIST('/tmp/data', download=True, train=True, transform=transform)
 
 # Initialize distributed backend  
-dist.init_process_group(backend='gloo', # Use 'nccl' for GPU or 'gloo' for CPU
+torch.distributed.init_process_group(backend='gloo', # Use 'nccl' for GPU or 'gloo' for CPU
                         init_method='tcp://172.17.2.15:8088',
                         world_size=1,
                         rank=worker_id)
 
-#dist.barrier()
+#torch.distributed.barrier()
 
 # Distribute the data using DistributedSampler
 train_sampler = torch.utils.data.distributed.DistributedSampler(trainset)
@@ -67,7 +66,7 @@ train_loader = torch.utils.data.DataLoader(
 )
 
 # Wrap model for distributed training
-#model = nn.parallel.DistributedDataParallel(single_model, device_ids=[dist.get_rank()])
+#model = nn.parallel.DistributedDataParallel(single_model, device_ids=[torch.distributed.get_rank()])
 model = nn.parallel.DistributedDataParallel(model)
 
 
@@ -83,11 +82,11 @@ for epoch in range(1):
     loss.backward()
     optimizer.step()
 
-    dist.all_reduce(loss) 
-    loss /= dist.get_world_size()
+    torch.distributed.all_reduce(loss) 
+    loss /= torch.distributed.get_world_size()
 
-    print('Rank ', dist.get_rank(), ', epoch ', epoch, ': ', loss.item())
+    print('Rank ', torch.distributed.get_rank(), ', epoch ', epoch, ': ', loss.item())
 
 # Save model
-if dist.get_rank() == 0: 
+if torch.distributed.get_rank() == 0: 
   torch.save(model.state_dict(), '/tmp/pt_model.pt')
