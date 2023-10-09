@@ -4,6 +4,9 @@ import torch.nn.functional as F
 import torch.distributed as dist
 import torch.optim as optim
 
+import os
+os.environ['GLOO_LOG_LEVEL'] = 'DEBUG'
+
 import sys
 worker_id = int(sys.argv[1])
 
