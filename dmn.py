@@ -90,4 +90,4 @@ for epoch in range(1):
 
 # Save model
 if dist.get_rank() == 0: 
-  torch.save(model.model.state_dict(), '/tmp/pt_model.pt')
+  torch.save(model.state_dict(), '/tmp/pt_model.pt')
