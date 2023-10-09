@@ -6,9 +6,9 @@ import torch.optim as optim
 
 import os
 os.environ['GLOO_LOG_LEVEL'] = 'DEBUG'
-os.environ['MASTER_PORT'] = 8088
+os.environ['MASTER_PORT'] = '8088'
 os.environ['MASTER_ADDR'] = '172.17.2.15'
-os.environ['WORLD_SIZE'] = 2 
+os.environ['WORLD_SIZE'] = '2' 
 
 
 import sys
