@@ -35,15 +35,15 @@ transform = transforms.Compose([
 # Load training data
 trainset = datasets.MNIST('/tmp/data', download=True, train=True, transform=transform)
 
-# Distribute the data using DistributedSampler
-train_sampler = torch.utils.data.distributed.DistributedSampler(trainset)
-
 # Initialize distributed backend  
 dist.init_process_group(backend='gloo', # Use 'nccl' for GPU or 'gloo' for CPU
 #                        init_method='tcp://127.0.0.1:8088',
                         init_method='tcp://172.17.2.15:8088',
                         world_size=2,
                         rank=worker_id)
+
+# Distribute the data using DistributedSampler
+train_sampler = torch.utils.data.distributed.DistributedSampler(trainset)
 
 # Load model and data
 model = build_model() 
