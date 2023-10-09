@@ -4,11 +4,11 @@ import torch.nn.functional as F
 import torch.distributed as dist
 import torch.optim as optim
 
-import os
-os.environ['GLOO_LOG_LEVEL'] = 'DEBUG'
-os.environ['MASTER_PORT'] = '8088'
-os.environ['MASTER_ADDR'] = '172.17.2.15'
-os.environ['WORLD_SIZE'] = '2' 
+#import os
+#os.environ['GLOO_LOG_LEVEL'] = 'DEBUG'
+#os.environ['MASTER_PORT'] = '8088'
+#os.environ['MASTER_ADDR'] = '172.17.2.15'
+#os.environ['WORLD_SIZE'] = '2' 
 #os.environ['GLOO_SOCKET_IFNAME'] = 'eth0'
 
 
@@ -45,12 +45,11 @@ trainset = datasets.MNIST('/tmp/data', download=True, train=True, transform=tran
 
 # Initialize distributed backend  
 dist.init_process_group(backend='gloo', # Use 'nccl' for GPU or 'gloo' for CPU
-#                        init_method='tcp://127.0.0.1:8088',
                         init_method='tcp://172.17.2.15:8088',
-                        world_size=2,
+                        world_size=1,
                         rank=worker_id)
 
-dist.barrier()
+#dist.barrier()
 
 # Distribute the data using DistributedSampler
 train_sampler = torch.utils.data.distributed.DistributedSampler(trainset)
