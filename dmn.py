@@ -35,9 +35,11 @@ transform = transforms.Compose([
 # Load training data
 trainset = datasets.MNIST('/tmp/data', download=True, train=True, transform=transform)
 
+# Distribute the data using DistributedSampler
+train_sampler = torch.utils.data.distributed.DistributedSampler(trainset)
 
 # Initialize distributed backend  
-dist.init_process_group(backend='tcp', 
+dist.init_process_group(backend='gloo', # Use 'nccl' for GPU or 'gloo' for CPU
 #                        init_method='tcp://127.0.0.1:8088',
                         init_method='tcp://172.17.2.15:8088',
                         world_size=2,
@@ -49,9 +51,10 @@ optimizer = optim.SGD(model.parameters(), lr=0.01)
 train_loader = torch.utils.data.DataLoader(
   dataset=trainset,
   batch_size=64,
-  shuffle=True,
+  shuffle=False,
   num_workers=0,
-  drop_last=True
+  drop_last=True,
+  sampler=train_sampler  # Use the distributed sampler
 )
 
 # Wrap model for distributed training
