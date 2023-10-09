@@ -9,7 +9,7 @@ os.environ['GLOO_LOG_LEVEL'] = 'DEBUG'
 os.environ['MASTER_PORT'] = '8088'
 os.environ['MASTER_ADDR'] = '172.17.2.15'
 os.environ['WORLD_SIZE'] = '2' 
-os.environ['GLOO_SOCKET_IFNAME'] = 'eth0'
+#os.environ['GLOO_SOCKET_IFNAME'] = 'eth0'
 
 
 import sys
