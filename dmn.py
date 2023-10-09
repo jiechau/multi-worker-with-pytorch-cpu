@@ -56,7 +56,7 @@ train_sampler = torch.utils.data.distributed.DistributedSampler(trainset)
 
 # Load model and data
 model = build_model() 
-optimizer = optim.SGD(model.parameters(), lr=0.01)
+optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.5)
 train_loader = torch.utils.data.DataLoader(
   dataset=trainset,
   batch_size=64,
@@ -86,7 +86,7 @@ for epoch in range(1):
     dist.all_reduce(loss) 
     loss /= dist.get_world_size()
 
-  print('Rank ', dist.get_rank(), ', epoch ', epoch, ': ', loss.item())
+    print('Rank ', dist.get_rank(), ', epoch ', epoch, ': ', loss.item())
 
 # Save model
 if dist.get_rank() == 0: 
